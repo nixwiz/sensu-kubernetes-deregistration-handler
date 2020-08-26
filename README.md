@@ -107,11 +107,10 @@ spec:
 ### RBAC
 
 It is advised to use [RBAC][8] to create a user scoped specifically for
-purposes such as this handler and to not re-use the admin account.  For
-this handler, in particular, the account would need access to list and
-delete entities.  The example below shows how to create a limited-scope user
-and the necessary role and role-binding resources to give it the required
-access.
+purposes such as this handler and to not re-use the admin account.  For this
+handler, in particular, the account would need access to delete entities.  The
+example below shows how to create a limited-scope user and the necessary role
+and role-binding resources to give it the required access.
 
 ```
 sensuctl user create kubernetes --password='4yva#ko!Yq'
