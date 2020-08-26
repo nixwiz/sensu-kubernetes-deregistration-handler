@@ -88,6 +88,8 @@ K1FESSsDNHsGdZioIdZIKY8d0GTM4tEj
 
 	assert := assert.New(t)
 	r := strings.NewReader(caPEM)
-	_, err := readCAFile(r)
+	cert, err := readCAFile(r)
 	assert.NoError(err)
+	assert.Equal(true, cert.IsCA)
+	assert.Equal("Test CA", cert.Subject.CommonName)
 }
