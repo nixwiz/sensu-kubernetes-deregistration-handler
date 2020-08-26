@@ -86,10 +86,47 @@ vxfC5nxN0thcjRCpydrQMf/aLRynWxL05iV5+ZEqR8gcF2M+552SBA3QtW3xtXXF
 K1FESSsDNHsGdZioIdZIKY8d0GTM4tEj
 -----END CERTIFICATE-----`
 
+
+	// A certificate, but not a CA
+	notcaPEM := `-----BEGIN CERTIFICATE-----
+MIIDwjCCAqqgAwIBAgIUIfeqXZpw70ZkdBNHSdgnYD7OOpgwDQYJKoZIhvcNAQEL
+BQAwajELMAkGA1UEBhMCVVMxDzANBgNVBAgTBk9yZWdvbjERMA8GA1UEBxMIUG9y
+dGxhbmQxEDAOBgNVBAoTB1Rlc3RpbmcxEzARBgNVBAsTClRlc3RpbmcgQ0ExEDAO
+BgNVBAMTB1Rlc3QgQ0EwHhcNMjAwODI2MTcwODAwWhcNMjUwODI1MTcwODAwWjAe
+MRwwGgYDVQQDExNiYWNrZW5kLmV4YW1wbGUuY29tMIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEA9nLGR4zo6FXWuyHJuVsQLdMxXbqeIo7X1rl0WxHhwYuS
+nihXxaaJRTdqtLezUFcCJR8IYBZj+jvFI9xn6j04BvfYUlbk9ZqxC7S11qqQCFxG
+pC0VNgXlnT7Ty/r3tR9kj2Z8xK+lf+ZxUR5X1NV0Oj6bbLXPgM+UlqMPubFebUUa
+o+Benh6tZ1ubRTT3AI5O+1HJV/6WyslbLg9g0ju5nAwEW2tBI+XmqA7EyiEKJwwY
+PlEDoiUAe1+JQXwQBe+ibQO6rP+yRzYcjlep87mllbinJRjapcDeQCA1VpbodOv3
+wJwxzcIJeEKTcLI5VFjeW3MBBqFmfSs2zRDqpTlB5wIDAQABo4GrMIGoMA4GA1Ud
+DwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDAYDVR0T
+AQH/BAIwADAdBgNVHQ4EFgQUvoITPNqM55EfnxAMRI9X7tdTEmIwHwYDVR0jBBgw
+FoAUZrH4Sa/QML9aEorb3vQCjL+S6jIwKQYDVR0RBCIwIIIJbG9jYWxob3N0ggdi
+YWNrZW5khwR/AAABhwQKAAABMA0GCSqGSIb3DQEBCwUAA4IBAQBgyKhgEmstkxvJ
+5M5cfBBEB+YrZvTMjc5wch3PfI0puRUCOHeqRey8vb3x64zW18Xuo+GjLc29I0Fh
+13BooBfI0chMOTMqyf7KWf0tBn2peCPh2BQikt2vinE2z7mDf6tDd7ZmC1X6HCBe
+lrIY0/fRxYZlmv3Czllt846n106iVsyLDXlLlcicsYFotTQ3ZY6aNzekj8yBl3S6
+3FNrZwd+s0tmiIioHT1kWo73F7IFflVPEnNMof+QUxC9TOLe6hkV8zTe2MXfH1T1
+Pm7W5dUgDUMXI7BN2+GW2DJrLIANQm5EDz76AhqKiiqnz7JB4A0vKqJ94BSlIVwG
+Aecfiikf
+-----END CERTIFICATE-----`
+
+	// Obviously...
+	badcaPEM := "This is definitely not a certificate"
+
 	assert := assert.New(t)
 	r := strings.NewReader(caPEM)
 	cert, err := readCAFile(r)
 	assert.NoError(err)
 	assert.Equal(true, cert.IsCA)
 	assert.Equal("Test CA", cert.Subject.CommonName)
+
+	r = strings.NewReader(notcaPEM)
+	cert, err = readCAFile(r)
+	assert.Error(err)
+
+	r = strings.NewReader(badcaPEM)
+	cert, err = readCAFile(r)
+	assert.Error(err)
 }
