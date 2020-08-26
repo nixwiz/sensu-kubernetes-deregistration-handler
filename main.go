@@ -5,9 +5,11 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/url"
+	"os"
 
 	"github.com/sensu-community/sensu-plugin-sdk/httpclient"
 	"github.com/sensu-community/sensu-plugin-sdk/sensu"
@@ -113,19 +115,14 @@ func executeHandler(event *corev2.Event) error {
 		InsecureSkipVerify: plugin.InsecureSkipVerify,
 	}
 	if plugin.TrustedCAFile != "" {
-		certData, err := ioutil.ReadFile(plugin.TrustedCAFile)
+		file, err := os.Open(plugin.TrustedCAFile)
 		if err != nil {
-			return fmt.Errorf("Unable to load trusted-ca-file: %s", err)
+			return fmt.Errorf("Unable to open trusted-ca-file: %s", err)
 		}
-		block, _ := pem.Decode(certData)
-		if block == nil {
-			return fmt.Errorf("Unable to decode trusted-ca-file: %s.  Is it in PEM format?", err)
-		}
-		cert, err := x509.ParseCertificate(block.Bytes)
+		config.CACert, err = readCAFile(file)
 		if err != nil {
-			return fmt.Errorf("Invalid trusted-ca-file: %s", err)
+			return err
 		}
-		config.CACert = cert
 
 	}
 	client := httpclient.NewCoreClient(config)
@@ -147,4 +144,20 @@ func executeHandler(event *corev2.Event) error {
 	}
 
 	return nil
+}
+
+func readCAFile(reader io.Reader) (*x509.Certificate, error) {
+	certData, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return nil, fmt.Errorf("Unable to load trusted-ca-file: %s", err)
+	}
+	block, _ := pem.Decode(certData)
+	if block == nil {
+		return nil, fmt.Errorf("Unable to decode trusted-ca-file: %s.  Is it in PEM format?", err)
+	}
+	cert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		return nil, fmt.Errorf("Invalid trusted-ca-file: %s", err)
+	}
+	return cert, nil
 }
