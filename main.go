@@ -153,7 +153,7 @@ func readCAFile(reader io.Reader) (*x509.Certificate, error) {
 	}
 	block, _ := pem.Decode(certData)
 	if block == nil {
-		return nil, fmt.Errorf("Unable to decode trusted-ca-file: %s.  Is it in PEM format?", err)
+		return nil, fmt.Errorf("Unable to decode trusted-ca-file.  Is it in PEM format?", err)
 	}
 	cert, err := x509.ParseCertificate(block.Bytes)
 	if err != nil {
