@@ -159,5 +159,8 @@ func readCAFile(reader io.Reader) (*x509.Certificate, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Invalid trusted-ca-file: %s", err)
 	}
+	if !cert.IsCA {
+		return nil, fmt.Errorf("Certificate in trusted-ca-file is not a CA")
+	}
 	return cert, nil
 }
