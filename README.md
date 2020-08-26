@@ -117,7 +117,7 @@ access.
 sensuctl user create kubernetes --password='4yva#ko!Yq'
 Created
 
-sensuctl role create delete-entities --verb list,delete --resource entity
+sensuctl role create delete-entities --verb delete --resource entities
 Created
 
 sensuctl role-binding create kubernetes-delete-entities --role=delete-entities --user=kubernetes
