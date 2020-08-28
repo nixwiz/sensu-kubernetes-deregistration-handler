@@ -123,10 +123,10 @@ Aecfiikf
 	assert.Equal("Test CA", cert.Subject.CommonName)
 
 	r = strings.NewReader(notcaPEM)
-	cert, err = readCAFile(r)
+	_, err = readCAFile(r)
 	assert.Error(err)
 
 	r = strings.NewReader(badcaPEM)
-	cert, err = readCAFile(r)
+	_, err = readCAFile(r)
 	assert.Error(err)
 }
