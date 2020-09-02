@@ -89,7 +89,7 @@ func checkArgs(event *corev2.Event) error {
 		return fmt.Errorf("No API URL specified, please specify --apiURL or set env var SENSU_API_URL")
 	}
 
-	_, err := url.Parse(plugin.APIURL)
+	_, err := url.ParseRequestURI(plugin.APIURL)
 	if err != nil {
 		return fmt.Errorf("Invalid value for --apiURL: %s", err)
 	}
